@@ -4,10 +4,16 @@ pipeline {
     stages {
         stage('deploy') {
             steps {
-                sh '''
-                ls
-                kubectl apply -f deployment.yaml
-               '''
+                withCredentials([
+        file(credentialsId: "kube-config", variable: 'KUBECRED'),
+       
+    ]) {
+        sh """
+          export KUBECONFIG=$KUBECRED
+          kubectl apply -f deployment.yaml
+        """
+        
+    }
             }
         }
         
